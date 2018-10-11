@@ -1,45 +1,113 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>threejs - basic</title>
-	<link rel="stylesheet" href="style.css" type="text/css" media=screen>
-</head>
-<body>
+<html lang="en">
 
-	<canvas id="myCanvas"></canvas>
+	<head>
 
-	<script src="js/three.js"></script>
-	<script>
-		var renderer = new THREE.WebGLRenderer({canvas: document.getElementById('myCanvas'), antialias: true});
-		renderer.setClearColor(0x00ff00);
-		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(window.innerWidth, window.innerHeight);
+		<title>threejs</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" href="style.css" type="text/css" media=screen>
 
-		var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 3000);
+	</head>
 
-		var scene = new THREE.Scene();
+	<body>
 
-		var light = new THREE.AmbientLight(0xffffff, 0.5);
-		scene.add(light);
+		<canvas id="myCanvas"></canvas>
 
-		var light1 = new THREE.PointLight(0xffffff, 0.5);
-		scene.add(light1);
+		<script src="js/three.js"></script>
 
-		var geometry = new THREE.CubeGeometry(100, 100, 100);
-		var material = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
-		var mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(0, 0, -1000);
+		<script>
 
-		scene.add(mesh);
+			var renderer,
+			scene,
+			camera,
+			myCanvas = document.getElementById('myCanvas');
 
-		requestAnimationFrame(render);
+			//renderer
 
-		function render() {
-			mesh.rotation.x += 0.1;
-			mesh.rotation.y += 0.1;
-			renderer.render(scene, camera);
-			requestAnimationFrame(render);
-		}
+			var renderer = new THREE.WebGLRenderer({canvas: myCanvas, antialias: true});
+			renderer.setClearColor(0x000000);
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
 
-		renderer.render(scene, camera);
-	</script>
+			//camera
+
+			var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 300, 10000);
+
+			//scene
+
+			var scene = new THREE.Scene();
+
+			//lights
+
+			light = new THREE.AmbientLight(0xffffff, 0.5);
+			scene.add(light);
+
+			var light1 = new THREE.PointLight(0xffffff, 0.5);
+			scene.add(light1);
+
+			//geometry
+
+
+			//cube
+
+			var geometry = new THREE.CubeGeometry(100, 100, 100);
+			var material = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.z = -1000;
+			mesh.position.x = -300;
+			scene.add(mesh);
+
+			//sphere
+
+			var geometry2 = new THREE.SphereGeometry(50, 20, 20);
+			var material2 = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
+			var mesh2 = new THREE.Mesh(geometry2, material2);
+			mesh2.position.z = -1000;
+			mesh2.position.x = 0;
+			scene.add(mesh2);
+
+			//heart
+			
+			var x = 0, y = 0;
+			var heartShape = new THREE.Shape();
+
+			heartShape.moveTo(x - 25, y - 25);
+			heartShape.bezierCurveTo( x - 25, y - 25, x - 20, y, x, y );
+			heartShape.bezierCurveTo( x + 30, y, x + 30, y - 35,x + 30,y - 35 );
+			heartShape.bezierCurveTo( x + 30, y - 55, x + 10, y - 77, x - 25, y - 95 );
+			heartShape.bezierCurveTo( x - 60, y - 77, x - 80, y - 55, x - 80, y - 35 );
+			heartShape.bezierCurveTo( x - 80, y - 35, x - 80, y, x - 50, y );
+			heartShape.bezierCurveTo( x - 35, y, x - 25, y - 25, x - 25, y - 25 );
+
+			var extrudeSettings = { amount: 10, bevelEnabled: true, bevelSegments: 20, steps: 0, bevelSize: 10, bevelThickness: 25 };
+
+			var geometry3 = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
+			var material3 = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
+			var mesh3 = new THREE.Mesh(geometry3, material3);
+			mesh3.position.z = -1000;
+			mesh3.position.x = 300;
+			mesh3.position.y = 45;
+			scene.add(mesh3);
+
+
+			//render loop
+			render();
+
+			function render() {
+
+				mesh.rotation.x += 0.01;
+				mesh.rotation.y += 0.01;
+
+				renderer.render(scene, camera);
+
+				requestAnimationFrame(render);
+
+			 }
+
+
+		</script>
+
+	</body>
+
+</html>
