@@ -30,9 +30,10 @@
 			renderer.setPixelRatio(window.devicePixelRatio);
 			renderer.setSize(window.innerWidth, window.innerHeight);
 
-			//camera
+			//camera - set z position for spinning perspective
 
 			var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 300, 10000);
+			camera.position.z = 300;
 
 			//scene
 
@@ -46,13 +47,20 @@
 			var light1 = new THREE.PointLight(0xffffff, 0.5);
 			scene.add(light1);
 
-			//geometry
+			// material
+			var material = new THREE.MeshNormalMaterial({
+				color: 0xff0000,
+				transparent: true,
+				opacity: 1,
+				wireframe: true,
+				wireframeLinewidth: 6});
 
+
+			//geometry
 
 			//cube
 
 			var geometry = new THREE.CubeGeometry(100, 100, 100);
-			var material = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
 			var mesh = new THREE.Mesh(geometry, material);
 			mesh.position.z = -1000;
 			mesh.position.x = -300;
@@ -61,8 +69,7 @@
 			//sphere
 
 			var geometry2 = new THREE.SphereGeometry(50, 20, 20);
-			var material2 = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
-			var mesh2 = new THREE.Mesh(geometry2, material2);
+			var mesh2 = new THREE.Mesh(geometry2, material);
 			mesh2.position.z = -1000;
 			mesh2.position.x = 0;
 			scene.add(mesh2);
@@ -80,24 +87,43 @@
 			heartShape.bezierCurveTo( x - 80, y - 35, x - 80, y, x - 50, y );
 			heartShape.bezierCurveTo( x - 35, y, x - 25, y - 25, x - 25, y - 25 );
 
-			var extrudeSettings = { amount: 10, bevelEnabled: true, bevelSegments: 20, steps: 0, bevelSize: 10, bevelThickness: 25 };
+			var extrudeSettings = { amount: 10, bevelEnabled: false, bevelSegments: 20, steps: 0, bevelSize: 10, bevelThickness: 25 };
 
 			var geometry3 = new THREE.ExtrudeGeometry( heartShape, extrudeSettings );
-			var material3 = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
-			var mesh3 = new THREE.Mesh(geometry3, material3);
+			var mesh3 = new THREE.Mesh(geometry3, material);
 			mesh3.position.z = -1000;
 			mesh3.position.x = 300;
 			mesh3.position.y = 45;
 			scene.add(mesh3);
 
+			// plane - does not work with spinning camera
+
+			// var geometry4 = new THREE.PlaneGeometry(10000, 10000, 100, 100);
+			// var mesh4 = new THREE.Mesh(geometry4, material);
+			// mesh4.rotation.x = -90 * Math.PI / 180;
+			// mesh4.position.y = -100;
+			// scene.add(mesh4);
+
 
 			//render loop
+
 			render();
 
-			function render() {
+			//comment this out if you want shapes solitary
+			var delta = 0;
 
-				mesh.rotation.x += 0.01;
-				mesh.rotation.y += 0.01;
+			function render() {
+				
+				//this code if you want the shapes to spin around the screen
+				delta += 0.01;
+
+				camera.lookAt(light.position);
+				camera.position.x = Math.sin(delta) * 2000;
+				camera.position.z = Math.cos(delta) * 2000;
+
+				//this code if you want the shapes solitary(not moving)
+				// mesh.rotation.x += 0.01;
+				// mesh.rotation.y += 0.01;
 
 				renderer.render(scene, camera);
 
